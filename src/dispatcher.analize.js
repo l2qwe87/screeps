@@ -29,7 +29,25 @@ let scaner = {
                 order: 100 * (structure.hits / structure.hitsMax) //structure.ticksToDecay
             }})
             //.filter(e => e.ticksToDecay < 300 && e.ticksToDecay > 20)
-            .filter(e => e.hits < e.hitsMax && e.hits > 1 && e.order < 30)
+            //.filter(e => e.hits < e.hitsMax && e.hits > 1 && e.order < 30)
+            .filter(e => e.order > 1)
+            
+
+        Memory.structures = Memory.structures || {};
+        repearNeeding.forEach(e => {
+            Memory.structures[e.structure.id] = Memory.structures[e.structure.id] || {};
+            if(Memory.structures[e.structure.id].needRepear){
+                if(e.order > 90){
+                    Memory.structures[e.structure.id].needRepear = false;
+                }
+            }else
+            if(e.order < 30){
+                Memory.structures[e.structure.id].needRepear = true;
+            }
+        });
+
+        repearNeeding = repearNeeding
+            .filter(e => Memory.structures[e.structure.id].needRepear)
             .sort((a,b) => a.order - b.order);
 
         console.log('=============== scanRepear ===============')
